@@ -5,6 +5,12 @@ import PointercrateClient from '.';
 // global client (why not?)
 const client = new PointercrateClient("http://localhost:8088/api/");
 
+test.serial("logging into account through password", async t => {
+	await client.login("test", "testaccount");
+
+	t.true(client.user != undefined);
+});
+
 test("getting demon by id 1", async t => {
 	const demon = await client.demons.from_id(1);
 
@@ -40,10 +46,4 @@ test("getting ranked players", async t => {
 	const players = await client.players.by_ranking();
 
 	t.is(players[1].rank, 2);
-});
-
-test("logging into account through password", async t => {
-	await client.login("test", "testaccount");
-
-	t.true(client.user != undefined);
 });

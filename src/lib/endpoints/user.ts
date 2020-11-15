@@ -83,7 +83,7 @@ export class User {
 	}
 }
 
-export default class PlayerBuilder extends Builder {
+export default class UserBuilder extends Builder {
 	/**
 	 * gets registered user listing
 	 * requires at least moderator or listhelper

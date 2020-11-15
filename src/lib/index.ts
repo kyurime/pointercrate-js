@@ -3,12 +3,14 @@ import axios, { AxiosInstance } from 'axios';
 import DemonBuilder from './endpoints/demon';
 import Error from './endpoints/error';
 import PlayerBuilder from './endpoints/player';
+import UserBuilder from './endpoints/user';
 import { User } from './endpoints/user';
 export default class PointercrateClient {
 	http_instance: AxiosInstance;
 
 	demons = new DemonBuilder(this);
 	players = new PlayerBuilder(this);
+	users = new UserBuilder(this);
 
 	user?: User;
 	token?: string;
@@ -61,5 +63,17 @@ export default class PointercrateClient {
 			}
 			throw error;
 		}
+	}
+
+	/**
+	 * logins to an account in an unsafe manner
+	 * this prevents ratelimiting, but means that no validation checks happen
+	 * @param token token of user to authenticate as
+	 */
+	async token_login_unsafe(token: string) {
+		this.token = token;
+
+		// unsafe user gets max permissions
+		this.user = new User({ id: -1, name: "unknown", permissions: 0xFFFF});
 	}
 }
