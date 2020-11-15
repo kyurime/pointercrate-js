@@ -1,4 +1,4 @@
-import Builder from "./builder";
+import Builder from "../base/builder";
 
 export enum PermissionTypes {
 	ExtendedAccess = 1 << 0,

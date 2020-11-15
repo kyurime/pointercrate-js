@@ -1,4 +1,5 @@
-import Builder from './builder';
+import Builder from '../base/builder';
+
 import { PermissionTypes } from './user';
 
 export class Submitter {

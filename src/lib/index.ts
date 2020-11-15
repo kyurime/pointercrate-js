@@ -1,5 +1,6 @@
 import axios, { AxiosInstance } from 'axios';
 
+import PointercrateRequest from './base/request';
 import DemonBuilder from './endpoints/demon';
 import Error from './endpoints/error';
 import PlayerBuilder from './endpoints/player';
@@ -7,6 +8,10 @@ import RecordBuilder from './endpoints/record';
 import SubmitterBuilder from './endpoints/submitter';
 import UserBuilder from './endpoints/user';
 import { User } from './endpoints/user';
+
+interface UserRequest extends PointercrateRequest<User> {
+	token: string;
+}
 export default class PointercrateClient {
 	http_instance: AxiosInstance;
 
@@ -32,7 +37,7 @@ export default class PointercrateClient {
 	 */
 	async login(username: string, password: string) {
 		try {
-			const response = await this.http_instance.post("/v1/auth/", {}, {
+			const response = await this.http_instance.post<UserRequest>("/v1/auth/", {}, {
 				auth: {
 					username,
 					password
@@ -52,7 +57,7 @@ export default class PointercrateClient {
 
 	async token_login(token: string) {
 		try {
-			const response = await this.http_instance.post("/v1/auth/", {}, {
+			const response = await this.http_instance.post<PointercrateRequest<User>>("/v1/auth/", {}, {
 				headers: {
 					"Authorization": `Bearer ${token}`
 				}

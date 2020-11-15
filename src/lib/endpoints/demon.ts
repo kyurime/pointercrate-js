@@ -1,4 +1,5 @@
-import Builder from './builder';
+import Builder from '../base/builder';
+
 import { DatabasePlayer } from './player';
 import { MinimalRecordP } from './record';
 

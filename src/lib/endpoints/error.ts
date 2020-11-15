@@ -1,5 +1,11 @@
-export default interface Error {
+import PointercrateRequest from '../base/request';
+
+// internally pointercrate says "a JSON object" for error
+/**
+ * Error response
+ * Data is an object of additional data
+ */
+export default interface Error extends PointercrateRequest<unknown> {
 	message: string,
-	// data is unmapped due to the odd complexity of it
 	code: number,
 }

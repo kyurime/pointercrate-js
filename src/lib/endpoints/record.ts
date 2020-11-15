@@ -1,4 +1,5 @@
-import Builder from './builder';
+import Builder from '../base/builder';
+
 import { MinimalDemon } from './demon';
 import Note from './note';
 import { DatabasePlayer } from './player';

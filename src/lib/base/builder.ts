@@ -1,6 +1,5 @@
+import Error from '../endpoints/error';
 import PointercrateClient from '../index';
-
-import Error from './error';
 
 export default class Builder {
 	constructor(
@@ -16,6 +15,7 @@ export default class Builder {
 		}
 
 		try {
+			// pointercraterequest isn't used here because array types don't follow it
 			const response = await this.client.http_instance.get(url, {
 				headers
 			});
