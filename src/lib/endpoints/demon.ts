@@ -51,18 +51,18 @@ export class FullDemon extends Demon {
 
 export default class DemonBuilder extends Builder {
 	async from_id(id: number) {
-		return this.get_req<FullDemon>(`v2/demons/${id}`);
+		return this._get_req<FullDemon>(`v2/demons/${id}`);
 	}
 
 	async from_position(position: number) {
-		return this.get_req<FullDemon>(`v1/demons/${position}`);
+		return this._get_req<FullDemon>(`v1/demons/${position}`);
 	}
 
 	async by_id() {
-			return this.get_req<FullDemon[]>(`v2/demons/`);
+			return this._get_req<FullDemon[]>(`v2/demons/`);
 	}
 
 	async by_position() {
-			return this.get_req<FullDemon[]>(`v1/demons/`);
+			return this._get_req<FullDemon[]>(`v1/demons/`);
 	}
 }

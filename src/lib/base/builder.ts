@@ -6,7 +6,7 @@ export default class Builder {
 		public client: PointercrateClient
 	) { }
 
-	async get_req<T>(url: string) {
+	protected async _get_req<T>(url: string) {
 		// love ya strict typing
 		const headers: { Authorization?: string } = {};
 
