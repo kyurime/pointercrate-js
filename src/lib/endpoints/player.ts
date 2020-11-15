@@ -41,6 +41,27 @@ export class FullPlayer extends Player {
 	}
 }
 
+export class RankedPlayer {
+	id: number;
+	name: string;
+	rank: number;
+	score: number;
+	nationality?: Nationality;
+
+	constructor({ id, name, rank, score, nationality }:
+		{ id: number, name: string, rank: number, score: number,
+			nationality?: Nationality }) {
+		this.id = id;
+		this.name = name;
+		this.rank = rank;
+		this.score = score;
+
+		if (nationality) {
+			this.nationality = nationality;
+		}
+	}
+}
+
 export default class PlayerBuilder extends Builder {
 	async from_id() {
 		return;
