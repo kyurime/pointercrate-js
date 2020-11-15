@@ -14,7 +14,11 @@ export default class Builder {
 			throw response.data as Error;
 		}
 
-		// yeah.
-		return response.data.data as T;
+		// some endpoints return within data field (singular or not)
+		if (response.data.data) {
+			return <T>response.data.data;
+		} else {
+			return <T>response.data;
+		}
 	}
 }

@@ -16,3 +16,16 @@ test("getting demon by position 2", async t => {
 
 	t.is(demon.position, 2);
 })
+
+test("getting demons by position", async t => {
+	const demon = await client.demons.by_position();
+
+	// demons is array so +1 for the position we want
+	t.is(demon[1].position, 2);
+})
+
+test("getting demons by id", async t => {
+	const demon = await client.demons.by_id();
+
+	t.is(demon[1].id, 2);
+})
