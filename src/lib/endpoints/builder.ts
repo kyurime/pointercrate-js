@@ -8,7 +8,16 @@ export default class Builder {
 	) { }
 
 	async get_req<T>(url: string) {
-		const response = await this.client.http_instance.get(url);
+		// love ya strict typing
+		const headers: { Authorization?: string } = {};
+
+		if (this.client.token) {
+			headers["Authorization"] = `Bearer ${this.client.token}`;
+		}
+
+		const response = await this.client.http_instance.get(url, {
+			headers
+		});
 
 		if (response.data.error) {
 			throw response.data as Error;

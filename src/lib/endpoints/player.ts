@@ -1,6 +1,7 @@
 import Builder from './builder';
 import { MinimalDemon } from './demon';
 import Nationality from './nationality';
+import { PermissionTypes } from './user';
 
 export class DatabasePlayer {
 	id: number;
@@ -75,7 +76,12 @@ export default class PlayerBuilder extends Builder {
 	* this endpoint requires extended access permissions
 	*/
 	async list() {
-		return this.get_req<Player[]>(`v1/players/`)
+		if (this.client.user &&
+			PermissionTypes.ExtendedAccess in this.client.user.implied_permissions) {
+			return this.get_req<Player[]>(`v1/players/`);
+		} else {
+			throw "Player listing endpoint requires ExtendedAccess!";
+		}
 	}
 
 	/**
