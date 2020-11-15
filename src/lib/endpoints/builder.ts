@@ -15,19 +15,23 @@ export default class Builder {
 			headers["Authorization"] = `Bearer ${this.client.token}`;
 		}
 
-		const response = await this.client.http_instance.get(url, {
-			headers
-		});
+		try {
+			const response = await this.client.http_instance.get(url, {
+				headers
+			});
 
-		if (response.data.error) {
-			throw response.data as Error;
-		}
-
-		// some endpoints return within data field (singular or not)
-		if (response.data.data) {
-			return <T>response.data.data;
-		} else {
-			return <T>response.data;
+			// some endpoints return within data field (singular or not)
+			if (response.data.data) {
+				return <T>response.data.data;
+			} else {
+				return <T>response.data;
+			}
+		} catch (error) {
+			if (error.response.data) {
+				const pointercrate_error = <Error>error.response.data;
+				throw pointercrate_error.message;
+			}
+			throw error;
 		}
 	}
 }

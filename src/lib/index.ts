@@ -40,6 +40,7 @@ export default class PointercrateClient {
 				const pointercrate_error = <Error>error.response.data;
 				throw pointercrate_error.message;
 			}
+			throw error;
 		}
 	}
 
@@ -51,10 +52,6 @@ export default class PointercrateClient {
 				}
 			});
 
-			if (!response.data.data) {
-				throw "Token login error!";
-			}
-
 			this.user = <User>response.data.data;
 			this.token = token;
 		} catch (error) {
@@ -62,6 +59,7 @@ export default class PointercrateClient {
 				const pointercrate_error = <Error>error.response.data;
 				throw pointercrate_error.message;
 			}
+			throw error;
 		}
 	}
 }
