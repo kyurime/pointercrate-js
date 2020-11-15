@@ -1,6 +1,7 @@
 import { MinimalDemon } from './demon';
 import Note from './note';
 import { DatabasePlayer } from './player';
+import { Submitter } from './submitter';
 
 enum RecordStatus {
 	Submitted = "submitted",
@@ -16,7 +17,7 @@ export class FullRecord {
 	status: RecordStatus;
 	demon: MinimalDemon;
 	player: DatabasePlayer;
-	// TODO: submitter
+	submitter?: Submitter;
 	notes: Note[];
 
 	constructor({ id, progress, video, status, demon, player, notes }:
