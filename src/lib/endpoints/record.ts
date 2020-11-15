@@ -1,3 +1,4 @@
+import Builder from './builder';
 import { MinimalDemon } from './demon';
 import Note from './note';
 import { DatabasePlayer } from './player';
@@ -10,13 +11,27 @@ enum RecordStatus {
 	UnderConsideration = "under consideration"
 }
 
+/**
+ * Full form of record
+ * See https://pointercrate.com/documentation/objects/#record
+ */
 export class FullRecord {
 	id: number;
 	progress: number;
 	video?: string;
+
+	/**
+	 * record status
+	 * access to non approved records requires ExtendedAccess permissions
+	 */
 	status: RecordStatus;
 	demon: MinimalDemon;
 	player: DatabasePlayer;
+
+	/**
+	 * submitter for record
+	 * access to submitter requires ListHelper permissions
+	 */
 	submitter?: Submitter;
 	notes: Note[];
 
@@ -108,5 +123,27 @@ export class MinimalRecordP {
 		this.video = video;
 		this.status = status;
 		this.player = player;
+	}
+}
+
+export default class RecordBuilder extends Builder {
+	/**
+	 * gets a record by id
+	 * extended access is needed for non approved records
+	 * list helper is required to view submitter
+	 * see https://pointercrate.com/documentation/records/#record-retrieval
+	 * @param id record id
+	 */
+	async from_id(id: number) {
+		return this.get_req<FullRecord>(`v1/records/${id}`);
+	}
+
+	/**
+	 * gets listing of all records
+   * extended access is needed for non approved records
+	 * see https://pointercrate.com/documentation/records/#get-records
+	 */
+	async list() {
+		return this.get_req<MinimalRecordPD[]>(`v1/records/`);
 	}
 }

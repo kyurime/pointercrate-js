@@ -3,6 +3,7 @@ import axios, { AxiosInstance } from 'axios';
 import DemonBuilder from './endpoints/demon';
 import Error from './endpoints/error';
 import PlayerBuilder from './endpoints/player';
+import RecordBuilder from './endpoints/record';
 import SubmitterBuilder from './endpoints/submitter';
 import UserBuilder from './endpoints/user';
 import { User } from './endpoints/user';
@@ -12,7 +13,8 @@ export default class PointercrateClient {
 	demons = new DemonBuilder(this);
 	players = new PlayerBuilder(this);
 	users = new UserBuilder(this);
-	submitter = new SubmitterBuilder(this);
+	submitters = new SubmitterBuilder(this);
+	records = new RecordBuilder(this);
 
 	user?: User;
 	token?: string;
