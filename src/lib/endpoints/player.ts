@@ -63,7 +63,26 @@ export class RankedPlayer {
 }
 
 export default class PlayerBuilder extends Builder {
-	async from_id() {
-		return;
+	/**
+	 * gets listed form of player
+	 * @param id id of player
+	 */
+	async from_id(id: number) {
+		return this.get_req<Player>(`v1/players/${id}`)
+	}
+
+	/**
+	* this endpoint requires extended access permissions
+	*/
+	async list() {
+		return this.get_req<Player[]>(`v1/players/`)
+	}
+
+	/**
+	 * this endpoint doesn't require extended access permissions
+	 * returns a different form of player
+	 */
+	async by_ranking() {
+		return this.get_req<RankedPlayer[]>(`v1/players/ranking/`)
 	}
 }
