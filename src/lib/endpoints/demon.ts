@@ -5,7 +5,7 @@ import { DatabasePlayer } from './player';
 import { MinimalRecordP } from './record';
 import { PermissionTypes } from './user';
 
-interface IMinimalDemon extends IBaseData {
+export interface IMinimalDemon extends IBaseData {
 	position: number;
 	name: string;
 }
@@ -21,7 +21,7 @@ export class MinimalDemon extends BaseRequest implements IMinimalDemon {
 	}
 }
 
-interface IDemon extends IMinimalDemon {
+export interface IDemon extends IMinimalDemon {
 	requirement: number;
 	video?: string;
 }
@@ -41,7 +41,7 @@ export class Demon extends MinimalDemon implements IDemon {
 	}
 }
 
-interface IFullDemon extends IDemon {
+export interface IFullDemon extends IDemon {
 	creators: DatabasePlayer[];
 	records: MinimalRecordP[];
 }

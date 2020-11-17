@@ -5,7 +5,7 @@ import { MinimalDemon } from './demon';
 import Nationality from './nationality';
 import { PermissionTypes } from './user';
 
-interface IDatabasePlayer extends IBaseData {
+export interface IDatabasePlayer extends IBaseData {
 	name: string;
 	banned: boolean;
 }
@@ -20,7 +20,7 @@ export class DatabasePlayer extends BaseRequest implements IDatabasePlayer {
 	}
 }
 
-interface IPlayer extends IDatabasePlayer {
+export interface IPlayer extends IDatabasePlayer {
 	nationality?: Nationality;
 }
 export class Player extends DatabasePlayer implements IPlayer {
@@ -32,7 +32,7 @@ export class Player extends DatabasePlayer implements IPlayer {
 	}
 }
 
-interface IFullPlayer extends IPlayer {
+export interface IFullPlayer extends IPlayer {
 	created: MinimalDemon[];
 	verified: MinimalDemon[];
 	published: MinimalDemon[];
@@ -52,7 +52,7 @@ export class FullPlayer extends Player implements IFullPlayer {
 	}
 }
 
-interface IRankedPlayer extends IBaseData {
+export interface IRankedPlayer extends IBaseData {
 	name: string;
 	rank: number;
 	score: number;

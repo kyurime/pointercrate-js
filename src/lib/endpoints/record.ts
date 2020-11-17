@@ -6,14 +6,14 @@ import Note from './note';
 import { DatabasePlayer } from './player';
 import { Submitter } from './submitter';
 
-enum RecordStatus {
+export enum RecordStatus {
 	Submitted = "submitted",
 	Approved = "approved",
 	Rejected = "rejected",
 	UnderConsideration = "under consideration"
 }
 
-interface IFullRecord extends IBaseData {
+export interface IFullRecord extends IBaseData {
 	progress: number;
 	video?: string;
 	status: RecordStatus;
@@ -58,7 +58,7 @@ export class FullRecord extends BaseRequest implements IFullRecord {
 	}
 }
 
-interface IMinimalRecordPD extends IBaseData {
+export interface IMinimalRecordPD extends IBaseData {
 	progress: number;
 	video?: string;
 	status: RecordStatus;
@@ -88,7 +88,7 @@ export class MinimalRecordPD extends BaseRequest implements IMinimalRecordPD {
 	}
 }
 
-interface IMinimalRecordD extends IBaseData {
+export interface IMinimalRecordD extends IBaseData {
 	progress: number;
 	video?: string;
 	status: RecordStatus;
@@ -115,7 +115,7 @@ export class MinimalRecordD extends BaseRequest implements IMinimalRecordD {
 	}
 }
 
-interface IMinimalRecordP extends IBaseData {
+export interface IMinimalRecordP extends IBaseData {
 	progress: number;
 	video?: string;
 	status: RecordStatus;

@@ -3,7 +3,7 @@ import BaseRequest, { IBaseData, IBaseRequest } from '../base/request';
 
 import { PermissionTypes } from './user';
 
-interface ISubmitter extends IBaseData {
+export interface ISubmitter extends IBaseData {
 	banned: boolean;
 }
 export class Submitter extends BaseRequest implements ISubmitter {
