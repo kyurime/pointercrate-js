@@ -1,4 +1,5 @@
 import Builder from "../base/builder";
+import BaseRequest, { IBaseData, IBaseRequest } from '../base/request';
 
 export enum PermissionTypes {
 	ExtendedAccess = 1 << 0,
@@ -12,40 +13,61 @@ export enum PermissionTypes {
 	Impossible = 1 << 15,
 }
 
-export class User {
-	id: number;
+interface IUser extends IBaseData {
+	name: string;
+	permissions: number;
+	display_name?: string;
+	youtube_channel?: string;
+}
+export class User extends BaseRequest implements IUser {
 	name: string;
 	permissions: number;
 	display_name?: string;
 	youtube_channel?: string;
 
-	constructor({ id, name, permissions, display_name, youtube_channel }:
-		{ id: number, name: string, permissions: number, display_name?: string,
-			youtube_channel?: string }) {
-				this.id = id;
-				this.name = name;
-				this.permissions = permissions;
+	constructor({ id, name, permissions, display_name, youtube_channel }: IUser,
+		data: IBaseRequest) {
+		super({ id }, data);
+		this.name = name;
+		this.permissions = permissions;
 
-				if (display_name) {
-					this.display_name = display_name;
-				}
-
-				if (youtube_channel) {
-					this.youtube_channel = youtube_channel;
-				}
+		if (display_name) {
+			this.display_name = display_name;
 		}
+
+		if (youtube_channel) {
+			this.youtube_channel = youtube_channel;
+		}
+	}
 
 	get permissions_list() {
 		const permissions_list: PermissionTypes[] = [];
 
 		for (const permission in PermissionTypes) {
 			// returns both the values we want and the names of each key
-			if (typeof permission == "string") {
+			if (isNaN(Number(permission))) {
 				continue;
 			}
 
-			if ((this.permissions & permission) == permission) {
-				permissions_list.push(permission);
+			if ((this.permissions & Number(permission)) == Number(permission)) {
+				permissions_list.push(Number(permission));
+			}
+		}
+
+		return permissions_list;
+	}
+
+	get_permissions_list() {
+		const permissions_list: PermissionTypes[] = [];
+
+		for (const permission in PermissionTypes) {
+			// returns both the values we want and the names of each key
+			if (isNaN(Number(permission))) {
+				continue;
+			}
+
+			if ((this.permissions & Number(permission)) == Number(permission)) {
+				permissions_list.push(Number(permission));
 			}
 		}
 
@@ -92,8 +114,8 @@ export default class UserBuilder extends Builder {
 		// ugh dual permissions
 		if (this.client.user &&
 			(PermissionTypes.Moderator in this.client.user.implied_permissions ||
-			PermissionTypes.ListHelper in this.client.user.implied_permissions)) {
-			return this._get_req<User[]>("v1/users/");
+				PermissionTypes.ListHelper in this.client.user.implied_permissions)) {
+			return this._get_req_list(User, "v1/users/");
 		} else {
 			throw "User listing endpoint requires Moderator or ListHelper";
 		}
@@ -108,7 +130,7 @@ export default class UserBuilder extends Builder {
 		if (this.client.user &&
 			(PermissionTypes.Moderator in this.client.user.implied_permissions ||
 				PermissionTypes.ListHelper in this.client.user.implied_permissions)) {
-			return this._get_req<User>(`v1/users/${id}`);
+			return this._get_req(User, `v1/users/${id}`);
 		} else {
 			throw "User retrieval endpoint requires Moderator or ListHelper";
 		}

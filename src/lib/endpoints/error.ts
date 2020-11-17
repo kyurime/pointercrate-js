@@ -1,4 +1,4 @@
-import PointercrateRequest from '../base/request';
+import { PointercrateRequest } from '../base/request';
 
 // internally pointercrate says "a JSON object" for error
 /**

@@ -136,7 +136,7 @@ export default class RecordBuilder extends Builder {
 	 * @param id record id
 	 */
 	async from_id(id: number) {
-		return this._get_req<FullRecord>(`v1/records/${id}`);
+		return this._get_req(FullRecord, `v1/records/${id}`);
 	}
 
 	/**
@@ -145,6 +145,6 @@ export default class RecordBuilder extends Builder {
 	 * see https://pointercrate.com/documentation/records/#get-records
 	 */
 	async list() {
-		return this._get_req<MinimalRecordPD[]>(`v1/records/`);
+		return this._get_req(MinimalRecordPD, `v1/records/`);
 	}
 }

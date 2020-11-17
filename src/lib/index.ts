@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from 'axios';
 
-import PointercrateRequest from './base/request';
+import { PointercrateRequest } from './base/request';
 import DemonBuilder from './endpoints/demon';
 import Error from './endpoints/error';
 import PlayerBuilder from './endpoints/player';
@@ -83,6 +83,6 @@ export default class PointercrateClient {
 		this.token = token;
 
 		// unsafe user gets max permissions
-		this.user = new User({ id: -1, name: "unknown", permissions: 0xFFFF});
+		this.user = new User({ id: -1, name: "unknown", permissions: 0xFFFF}, { etag: "unknown" });
 	}
 }

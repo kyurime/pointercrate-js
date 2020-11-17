@@ -3,7 +3,7 @@ import test from 'ava';
 import PointercrateClient from '.';
 
 // global client (why not?)
-const client = new PointercrateClient("http://localhost:8088/api/");
+const client = new PointercrateClient();
 
 test.serial("logging into account through password", async t => {
 	await client.login("test", "testaccount");
@@ -34,6 +34,21 @@ test("getting demons by id", async t => {
 	const demons = await client.demons.by_id();
 
 	t.is(demons[1].id, 2);
+});
+
+test("creating demon by position, name validation check", async t => {
+	const name = Math.random().toString(36).slice(2);
+
+	const demon = await client.demons.add({
+		name,
+		position: 2,
+		requirement: 50,
+		verifier: "a",
+		publisher: "a",
+		creators: ["a"],
+	});
+
+	t.is(demon.name, name);
 });
 
 test("getting player with id 1", async t => {
