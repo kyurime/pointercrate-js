@@ -1,4 +1,5 @@
 import Builder from '../base/builder';
+import BaseRequest, { IBaseData, IBaseRequest } from '../base/request';
 
 import { MinimalDemon } from './demon';
 import Note from './note';
@@ -12,12 +13,21 @@ enum RecordStatus {
 	UnderConsideration = "under consideration"
 }
 
+interface IFullRecord extends IBaseData {
+	progress: number;
+	video?: string;
+	status: RecordStatus;
+	demon: MinimalDemon;
+	player: DatabasePlayer;
+	submitter?: Submitter;
+	notes: Note[];
+}
+
 /**
  * Full form of record
  * See https://pointercrate.com/documentation/objects/#record
  */
-export class FullRecord {
-	id: number;
+export class FullRecord extends BaseRequest implements IFullRecord {
 	progress: number;
 	video?: string;
 
@@ -36,13 +46,9 @@ export class FullRecord {
 	submitter?: Submitter;
 	notes: Note[];
 
-	constructor({ id, progress, video, status, demon, player, notes }:
-		{
-			id: number, progress: number, video?: string,
-			status: RecordStatus, demon: MinimalDemon,
-			player: DatabasePlayer, notes: Note[]
-		}) {
-		this.id = id;
+	constructor({ id, progress, video, status, demon, player, notes }: IFullRecord,
+		data: IBaseRequest) {
+		super({ id }, data);
 		this.progress = progress;
 		this.video = video;
 		this.status = status;
@@ -52,12 +58,19 @@ export class FullRecord {
 	}
 }
 
+interface IMinimalRecordPD extends IBaseData {
+	progress: number;
+	video?: string;
+	status: RecordStatus;
+	demon: MinimalDemon;
+	player: DatabasePlayer;
+}
+
 /**
  * Minimal record
  * contains player and demon information
  */
-export class MinimalRecordPD {
-	id: number;
+export class MinimalRecordPD extends BaseRequest implements IMinimalRecordPD {
 	progress: number;
 	video?: string;
 	status: RecordStatus;
@@ -65,12 +78,8 @@ export class MinimalRecordPD {
 	player: DatabasePlayer;
 
 	constructor({ id, progress, video, status, demon, player }:
-		{
-			id: number, progress: number, video?: string,
-			status: RecordStatus, demon: MinimalDemon,
-			player: DatabasePlayer
-		}) {
-		this.id = id;
+		IMinimalRecordPD, data: IBaseRequest) {
+		super({ id }, data);
 		this.progress = progress;
 		this.video = video;
 		this.status = status;
@@ -79,23 +88,26 @@ export class MinimalRecordPD {
 	}
 }
 
+interface IMinimalRecordD extends IBaseData {
+	progress: number;
+	video?: string;
+	status: RecordStatus;
+	demon: MinimalDemon;
+}
+
 /**
  * Minimal record used in FullDemon responses
  * Does not contain player information
  */
-export class MinimalRecordD {
-	id: number;
+export class MinimalRecordD extends BaseRequest implements IMinimalRecordD {
 	progress: number;
 	video?: string;
 	status: RecordStatus;
 	demon: MinimalDemon;
 
-	constructor({ id, progress, video, status, demon }:
-		{
-			id: number, progress: number, video?: string,
-			status: RecordStatus, demon: MinimalDemon
-		}) {
-		this.id = id;
+	constructor({ id, progress, video, status, demon }: IMinimalRecordD,
+		data: IBaseRequest) {
+		super({ id }, data);
 		this.progress = progress;
 		this.video = video;
 		this.status = status;
@@ -103,23 +115,24 @@ export class MinimalRecordD {
 	}
 }
 
+interface IMinimalRecordP extends IBaseData {
+	progress: number;
+	video?: string;
+	status: RecordStatus;
+	player: DatabasePlayer;
+}
 /**
  * Minimal record used in leaderboard player responses
  * Does not contain demon information
  */
-export class MinimalRecordP {
-	id: number;
+export class MinimalRecordP extends BaseRequest implements IMinimalRecordP {
 	progress: number;
 	video?: string;
 	status: RecordStatus;
 	player: DatabasePlayer;
 
-	constructor({ id, progress, video, status, player }:
-		{
-			id: number, progress: number, video?: string,
-			status: RecordStatus, player: DatabasePlayer
-		}) {
-		this.id = id;
+	constructor({ id, progress, video, status, player }: IMinimalRecordP, data: IBaseRequest) {
+		super({ id }, data);
 		this.progress = progress;
 		this.video = video;
 		this.status = status;
@@ -141,7 +154,7 @@ export default class RecordBuilder extends Builder {
 
 	/**
 	 * gets listing of all records
-   * extended access is needed for non approved records
+	 * extended access is needed for non approved records
 	 * see https://pointercrate.com/documentation/records/#get-records
 	 */
 	async list() {

@@ -82,7 +82,7 @@ export default class PointercrateClient {
 		this.token = token;
 
 		// unsafe user gets max permissions
-		this.user = new User({ id: -1, name: "unknown", permissions: 0xFFFF}, { etag: "unknown" });
+		this.user = new User({ id: -1, name: "unknown", permissions: 0xFFFF}, { etag: "unknown", client: this });
 	}
 
 	/**
@@ -120,7 +120,7 @@ export default class PointercrateClient {
 		const response = await this._get_req_with_headers<PointercrateRequest<U>>(url);
 
 		// some endpoints return within data field (singular or not)
-		return new data_class(response.data.data, { etag: response.headers["ETag"] });
+		return new data_class(response.data.data, { etag: response.headers["ETag"], client: this });
 	}
 
 	/**
@@ -135,7 +135,7 @@ export default class PointercrateClient {
 		const class_list = [];
 
 		for (const data of response.data) {
-			class_list.push(new data_class(data, {}));
+			class_list.push(new data_class(data, { client: this }));
 		}
 
 		return class_list;
@@ -167,7 +167,7 @@ export default class PointercrateClient {
 				{ headers }
 			);
 
-			return new data_class(response.data.data, { etag: response.headers["ETag"] });
+			return new data_class(response.data.data, { etag: response.headers["ETag"], client: this });
 		} catch (error) {
 			if (error.response.data) {
 				const pointercrate_error = <Error>error.response.data;
