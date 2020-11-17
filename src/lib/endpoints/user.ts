@@ -115,7 +115,7 @@ export default class UserBuilder extends Builder {
 		if (this.client.user &&
 			(PermissionTypes.Moderator in this.client.user.implied_permissions ||
 				PermissionTypes.ListHelper in this.client.user.implied_permissions)) {
-			return this._get_req_list(User, "v1/users/");
+			return this.client._get_req_list(User, "v1/users/");
 		} else {
 			throw "User listing endpoint requires Moderator or ListHelper";
 		}
@@ -130,7 +130,7 @@ export default class UserBuilder extends Builder {
 		if (this.client.user &&
 			(PermissionTypes.Moderator in this.client.user.implied_permissions ||
 				PermissionTypes.ListHelper in this.client.user.implied_permissions)) {
-			return this._get_req(User, `v1/users/${id}`);
+			return this.client._get_req(User, `v1/users/${id}`);
 		} else {
 			throw "User retrieval endpoint requires Moderator or ListHelper";
 		}

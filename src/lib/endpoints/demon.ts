@@ -65,7 +65,7 @@ export default class DemonBuilder extends Builder {
 	 * @param id id of demon to get
 	 */
 	async from_id(id: number) {
-		return this._get_req(FullDemon, `v2/demons/${id}`);
+		return this.client._get_req(FullDemon, `v2/demons/${id}`);
 	}
 
 	/**
@@ -73,21 +73,21 @@ export default class DemonBuilder extends Builder {
 	 * @param position position of demon to get
 	 */
 	async from_position(position: number) {
-		return this._get_req(FullDemon, `v1/demons/${position}`);
+		return this.client._get_req(FullDemon, `v1/demons/${position}`);
 	}
 
 	/**
 	 * returns a list of all demons, sorted by id
 	 */
 	async by_id() {
-		return this._get_req_list(FullDemon, `v2/demons/`);
+		return this.client._get_req_list(FullDemon, `v2/demons/`);
 	}
 
 	/**
 	 * returns a list of all demons, sorted by position
 	 */
 	async by_position() {
-		return this._get_req_list(FullDemon, `v1/demons/`);
+		return this.client._get_req_list(FullDemon, `v1/demons/`);
 	}
 
 	/**
@@ -102,7 +102,7 @@ export default class DemonBuilder extends Builder {
 		}) {
 		if (this.client.user &&
 			PermissionTypes.ListModerator in this.client.user.implied_permissions) {
-			return this._post_req(Demon, "/v1/demons/", parameters);
+			return this.client._post_req(Demon, "/v1/demons/", parameters);
 		} else {
 			throw "Demon adding endpoint requires ListModerator!";
 		}

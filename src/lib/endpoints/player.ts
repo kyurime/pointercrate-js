@@ -84,7 +84,7 @@ export default class PlayerBuilder extends Builder {
 	 * @param id id of player
 	 */
 	async from_id(id: number) {
-		return this._get_req(Player, `v1/players/${id}`)
+		return this.client._get_req(Player, `v1/players/${id}`)
 	}
 
 	/**
@@ -93,7 +93,7 @@ export default class PlayerBuilder extends Builder {
 	async list() {
 		if (this.client.user &&
 			PermissionTypes.ExtendedAccess in this.client.user.implied_permissions) {
-			return this._get_req_list(Player, `v1/players/`);
+			return this.client._get_req_list(Player, `v1/players/`);
 		} else {
 			throw "Player listing endpoint requires ExtendedAccess!";
 		}
@@ -104,6 +104,6 @@ export default class PlayerBuilder extends Builder {
 	 * returns a different form of player
 	 */
 	async by_ranking() {
-		return this._get_req_list(RankedPlayer, `v1/players/ranking/`)
+		return this.client._get_req_list(RankedPlayer, `v1/players/ranking/`)
 	}
 }
