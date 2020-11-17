@@ -8,6 +8,9 @@ import RecordBuilder from './endpoints/record';
 import SubmitterBuilder from './endpoints/submitter';
 import UserBuilder, { User } from './endpoints/user';
 
+interface ClientSettings {
+	url?: string;
+}
 interface UserRequest extends PointercrateRequest<User> {
 	token: string;
 }
@@ -23,7 +26,9 @@ export default class PointercrateClient {
 	user?: User;
 	token?: string;
 
-	constructor(url = "https://pointercrate.com/api/") {
+	constructor(settings?: ClientSettings) {
+		const url = settings?.url ?? "https://pointercrate.com/api/";
+
 		this.http_instance = axios.create({
 			baseURL: url
 		});
@@ -82,7 +87,7 @@ export default class PointercrateClient {
 		this.token = token;
 
 		// unsafe user gets max permissions
-		this.user = new User({ id: -1, name: "unknown", permissions: 0xFFFF}, { etag: "unknown", client: this });
+		this.user = new User({ id: -1, name: "unknown", permissions: 0xFFFF }, { etag: "unknown", client: this });
 	}
 
 	/**
