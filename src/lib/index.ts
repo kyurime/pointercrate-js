@@ -48,7 +48,7 @@ export default class PointercrateClient {
 		} catch (error) {
 			if (error.response.data) {
 				const pointercrate_error = <Error>error.response.data;
-				throw pointercrate_error.message;
+				throw pointercrate_error;
 			}
 			throw error;
 		}
@@ -67,7 +67,7 @@ export default class PointercrateClient {
 		} catch (error) {
 			if (error.response.data) {
 				const pointercrate_error = <Error>error.response.data;
-				throw pointercrate_error.message;
+				throw pointercrate_error;
 			}
 			throw error;
 		}
@@ -104,7 +104,7 @@ export default class PointercrateClient {
 		} catch (error) {
 			if (error.response.data) {
 				const pointercrate_error = <Error>error.response.data;
-				throw pointercrate_error.message;
+				throw pointercrate_error;
 			}
 			throw error;
 		}
@@ -171,7 +171,7 @@ export default class PointercrateClient {
 		} catch (error) {
 			if (error.response.data) {
 				const pointercrate_error = <Error>error.response.data;
-				throw pointercrate_error.message;
+				throw pointercrate_error;
 			}
 			throw error;
 		}
