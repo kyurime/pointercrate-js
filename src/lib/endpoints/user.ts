@@ -13,7 +13,7 @@ export enum PermissionTypes {
 	Impossible = 1 << 15,
 }
 
-interface IUser extends IBaseData {
+export interface IUser extends IBaseData {
 	name: string;
 	permissions: number;
 	display_name?: string;

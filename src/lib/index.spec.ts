@@ -3,7 +3,7 @@ import test from 'ava';
 import PointercrateClient from '.';
 
 // global client (why not?)
-const client = new PointercrateClient();
+const client = new PointercrateClient({ url: "http://localhost:8088/api" });
 
 test.serial("logging into account through password", async t => {
 	await client.login("test", "testaccount");

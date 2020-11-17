@@ -6,12 +6,12 @@ import Error from './endpoints/error';
 import PlayerBuilder from './endpoints/player';
 import RecordBuilder from './endpoints/record';
 import SubmitterBuilder from './endpoints/submitter';
-import UserBuilder, { User } from './endpoints/user';
+import UserBuilder, { IUser, User } from './endpoints/user';
 
 interface ClientSettings {
 	url?: string;
 }
-interface UserRequest extends PointercrateRequest<User> {
+interface UserRequest extends PointercrateRequest<IUser> {
 	token: string;
 }
 export default class PointercrateClient {
@@ -48,7 +48,7 @@ export default class PointercrateClient {
 				}
 			});
 
-			this.user = <User>response.data.data;
+			this.user = new User(response.data.data, { etag: response.headers["ETag"], client: this });
 			this.token = response.data.token;
 		} catch (error) {
 			if (error.response.data) {
@@ -61,13 +61,13 @@ export default class PointercrateClient {
 
 	async token_login(token: string) {
 		try {
-			const response = await this.http_instance.post<PointercrateRequest<User>>("/v1/auth/", {}, {
+			const response = await this.http_instance.post<PointercrateRequest<IUser>>("/v1/auth/", {}, {
 				headers: {
 					"Authorization": `Bearer ${token}`
 				}
 			});
 
-			this.user = <User>response.data.data;
+			this.user =	new User(response.data.data, { etag: response.headers["ETag"], client: this });
 			this.token = token;
 		} catch (error) {
 			if (error.response.data) {
