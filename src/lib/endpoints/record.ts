@@ -5,6 +5,7 @@ import { MinimalDemon } from './demon';
 import Note from './note';
 import { DatabasePlayer } from './player';
 import { Submitter } from './submitter';
+import { PermissionTypes } from './user';
 
 export enum RecordStatus {
 	Submitted = "submitted",
@@ -159,5 +160,16 @@ export default class RecordBuilder extends Builder {
 	 */
 	async list() {
 		return this.client._get_req(MinimalRecordPD, `v1/records/`);
+	}
+
+	async submit(parameters: { progress: number, player: string, demon: string,
+		video?: string, status?: RecordStatus }) {
+		if ((parameters.status) && (parameters.status != RecordStatus.Submitted) &&
+			!(this.client.user &&
+				this.client.user.implied_permissions.includes(PermissionTypes.ListHelper))) {
+			throw "Record adding endpoint requires ListHelper if RecordStatus is not Submitted!";
+		}
+
+		return this.client._post_req(MinimalRecordPD, "/v1/records/", parameters);
 	}
 }
