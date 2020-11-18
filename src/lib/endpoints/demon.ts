@@ -101,7 +101,7 @@ export default class DemonBuilder extends Builder {
 			creators: string[], video?: string
 		}) {
 		if (this.client.user &&
-			PermissionTypes.ListModerator in this.client.user.implied_permissions) {
+			this.client.user.implied_permissions.includes(PermissionTypes.ListModerator)) {
 			return this.client._post_req(Demon, "/v1/demons/", parameters);
 		} else {
 			throw "Demon adding endpoint requires ListModerator!";

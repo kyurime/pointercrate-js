@@ -92,7 +92,7 @@ export default class PlayerBuilder extends Builder {
 	*/
 	async list() {
 		if (this.client.user &&
-			PermissionTypes.ExtendedAccess in this.client.user.implied_permissions) {
+			this.client.user.implied_permissions.includes(PermissionTypes.ExtendedAccess)) {
 			return this.client._get_req_list(Player, `v1/players/`);
 		} else {
 			throw "Player listing endpoint requires ExtendedAccess!";

@@ -23,7 +23,7 @@ export default class SubmitterBuilder extends Builder {
 	 */
 	async from_id(id: number) {
 		if (this.client.user &&
-			PermissionTypes.ListModerator in this.client.user.implied_permissions) {
+			this.client.user.implied_permissions.includes(PermissionTypes.ListModerator)) {
 			return this.client._get_req(Submitter, `v1/submitters/${id}`);
 		} else {
 			throw "Submitter getting endpoint requires ListModerator!";
@@ -36,7 +36,7 @@ export default class SubmitterBuilder extends Builder {
 	 */
 	async list() {
 		if (this.client.user &&
-			PermissionTypes.ListAdministrator in this.client.user.implied_permissions) {
+			this.client.user.implied_permissions.includes(PermissionTypes.ListAdministrator)) {
 			return this.client._get_req(Submitter, `v1/submitters/`);
 		} else {
 			throw "Player listing endpoint requires ExtendedAccess!";

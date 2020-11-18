@@ -81,23 +81,23 @@ export class User extends BaseRequest implements IUser {
 		const permissions_list = this.permissions_list;
 
 		// this is how pointercrate does it (shrug)
-		if (PermissionTypes.Administrator in permissions_list) {
+		if (permissions_list.includes(PermissionTypes.Administrator)) {
 			permissions_list.push(PermissionTypes.Administrator);
 		}
 
-		if (PermissionTypes.ListAdministrator in permissions_list) {
+		if (permissions_list.includes(PermissionTypes.ListAdministrator)) {
 			permissions_list.push(PermissionTypes.ListModerator);
 		}
 
-		if (PermissionTypes.ListModerator in permissions_list) {
+		if (permissions_list.includes(PermissionTypes.ListModerator)) {
 			permissions_list.push(PermissionTypes.ListHelper);
 		}
 
-		if (PermissionTypes.ListHelper in permissions_list) {
+		if (permissions_list.includes(PermissionTypes.ListHelper)) {
 			permissions_list.push(PermissionTypes.ExtendedAccess);
 		}
 
-		if (PermissionTypes.LeaderboardAdministrator in permissions_list) {
+		if (permissions_list.includes(PermissionTypes.LeaderboardAdministrator)) {
 			permissions_list.push(PermissionTypes.LeaderboardModerator);
 		}
 
@@ -113,8 +113,8 @@ export default class UserBuilder extends Builder {
 	async list() {
 		// ugh dual permissions
 		if (this.client.user &&
-			(PermissionTypes.Moderator in this.client.user.implied_permissions ||
-				PermissionTypes.ListHelper in this.client.user.implied_permissions)) {
+			(this.client.user.implied_permissions.includes(PermissionTypes.Moderator) ||
+				this.client.user.implied_permissions.includes(PermissionTypes.ListHelper))) {
 			return this.client._get_req_list(User, "v1/users/");
 		} else {
 			throw "User listing endpoint requires Moderator or ListHelper";
@@ -128,8 +128,8 @@ export default class UserBuilder extends Builder {
 	 */
 	async from_id(id: number) {
 		if (this.client.user &&
-			(PermissionTypes.Moderator in this.client.user.implied_permissions ||
-				PermissionTypes.ListHelper in this.client.user.implied_permissions)) {
+			(this.client.user.implied_permissions.includes(PermissionTypes.Moderator) ||
+				this.client.user.implied_permissions.includes(PermissionTypes.ListHelper))) {
 			return this.client._get_req(User, `v1/users/${id}`);
 		} else {
 			throw "User retrieval endpoint requires Moderator or ListHelper";
