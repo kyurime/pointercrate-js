@@ -14,6 +14,12 @@ interface ClientSettings {
 interface UserRequest extends PointercrateRequest<IUser> {
 	token: string;
 }
+
+interface RequestOptions {
+	etag?: string;
+	// pagination eventually
+}
+
 export default class PointercrateClient {
 	http_instance: AxiosInstance;
 
@@ -67,7 +73,7 @@ export default class PointercrateClient {
 				}
 			});
 
-			this.user =	new User(response.data.data, { etag: response.headers["ETag"], client: this });
+			this.user = new User(response.data.data, { etag: response.headers["ETag"], client: this });
 			this.token = token;
 		} catch (error) {
 			if (error.response.data) {
@@ -91,15 +97,33 @@ export default class PointercrateClient {
 	}
 
 	/**
-	 * runs a get request without any type abstraction
-	 * @param url url from pointercrate to get
+	 * returns a generated list of headers based off provided options
+	 * @param options options for the request
 	 */
-	async _get_req_with_headers<T>(url: string) {
+	private _req_headers(options?: RequestOptions) {
 		const headers: Record<string, string> = {};
 
 		if (this.token) {
 			headers["Authorization"] = `Bearer ${this.token}`;
 		}
+
+		if (!options) {
+			return headers;
+		}
+
+		if (options.etag) {
+			headers["If-Match"] = options.etag;
+		}
+
+		return headers;
+	}
+
+	/**
+	 * runs a get request without any type abstraction
+	 * @param url url from pointercrate to get
+	 */
+	async _get_req_with_headers<T>(url: string, options?: RequestOptions) {
+		const headers = this._req_headers(options);
 
 		try {
 			const response = await this.http_instance.get<T>(url, {
@@ -121,8 +145,8 @@ export default class PointercrateClient {
 	 * @param url url of pointercrate to access
 	 */
 	async _get_req<T extends BaseRequest, U extends IBaseData>
-		(data_class: new (data: U, settings: IBaseRequest) => T, url: string) {
-		const response = await this._get_req_with_headers<PointercrateRequest<U>>(url);
+		(data_class: new (data: U, settings: IBaseRequest) => T, url: string, options?: RequestOptions) {
+		const response = await this._get_req_with_headers<PointercrateRequest<U>>(url, options);
 
 		// some endpoints return within data field (singular or not)
 		return new data_class(response.data.data, { etag: response.headers["ETag"], client: this });
@@ -134,8 +158,8 @@ export default class PointercrateClient {
 	 * @param url url of pointercrate to access
 	 */
 	async _get_req_list<T extends BaseRequest, U extends IBaseData>
-		(data_class: new (data: U, settings: IBaseRequest) => T, url: string): Promise<T[]> {
-		const response = await this._get_req_with_headers<U[]>(url);
+		(data_class: new (data: U, settings: IBaseRequest) => T, url: string, options?: RequestOptions): Promise<T[]> {
+		const response = await this._get_req_with_headers<U[]>(url, options);
 
 		const class_list = [];
 
@@ -154,16 +178,8 @@ export default class PointercrateClient {
 	 * @param etag used if editing/deleting something - if-match
 	 */
 	async _post_req<T extends BaseRequest, U extends IBaseData>
-		(data_class: new (data: U, settings: IBaseRequest) => T, url: string, data: Record<string, unknown>, etag?: string) {
-		const headers: Record<string, string> = {};
-
-		if (this.token) {
-			headers["Authorization"] = `Bearer ${this.token}`;
-		}
-
-		if (etag) {
-			headers["If-Match"] = etag;
-		}
+		(data_class: new (data: U, settings: IBaseRequest) => T, url: string, data: Record<string, unknown>, options?: RequestOptions) {
+		const headers = this._req_headers(options);
 
 		try {
 			const response = await this.http_instance.post<PointercrateRequest<U>>(
