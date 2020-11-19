@@ -1,8 +1,8 @@
 import Builder from '../base/builder';
 import BaseRequest, { IBaseData, IBaseRequest } from '../base/request';
 
-import { DatabasePlayer } from './player';
-import { MinimalRecordP } from './record';
+import { DatabasePlayer, IDatabasePlayer } from './player';
+import { IMinimalRecordP, MinimalRecordP } from './record';
 import { PermissionTypes } from './user';
 
 export interface IMinimalDemon extends IBaseData {
@@ -24,16 +24,23 @@ export class MinimalDemon extends BaseRequest implements IMinimalDemon {
 export interface IDemon extends IMinimalDemon {
 	requirement: number;
 	video?: string;
+	publisher: IDatabasePlayer;
+	verifier: IDatabasePlayer;
 }
 export class Demon extends MinimalDemon implements IDemon {
 	requirement: number;
 	video?: string;
+	publisher: DatabasePlayer;
+	verifier: DatabasePlayer;
 
 	constructor(
-		{ id, position, name, requirement, video }: IDemon,	data: IBaseRequest
+		{ id, position, name, requirement, video, publisher, verifier }: IDemon,	data: IBaseRequest
 	) {
 		super({ id, position, name }, data);
 		this.requirement = requirement;
+
+		this.publisher = new DatabasePlayer(publisher, { client: this.client });
+		this.verifier = new DatabasePlayer(verifier, { client: this.client });
 
 		if (video) {
 			this.video = video;
@@ -42,20 +49,28 @@ export class Demon extends MinimalDemon implements IDemon {
 }
 
 export interface IFullDemon extends IDemon {
-	creators: DatabasePlayer[];
-	records: MinimalRecordP[];
+	creators: IDatabasePlayer[];
+	records: IMinimalRecordP[];
 }
 export class FullDemon extends Demon implements IFullDemon {
 	creators: DatabasePlayer[];
 	records: MinimalRecordP[];
 
 	constructor(
-		{ id, position, name, requirement, video, creators, records }: IFullDemon,
+		{ id, position, name, requirement, video, publisher, verifier, creators, records }: IFullDemon,
 			data: IBaseRequest
 	) {
-		super({ id, position, name, requirement, video }, data);
-		this.creators = creators;
-		this.records = records;
+		super({ id, position, name, requirement, video, publisher, verifier }, data);
+
+		this.creators = [];
+		for (const creator of creators) {
+			this.creators.push(new DatabasePlayer(creator, { client: this.client }));
+		}
+
+		this.records = [];
+		for (const record of records) {
+			this.records.push(new MinimalRecordP(record, { client: this.client }));
+		}
 	}
 }
 
@@ -80,14 +95,14 @@ export default class DemonBuilder extends Builder {
 	 * returns a list of all demons, sorted by id
 	 */
 	async by_id() {
-		return this.client._get_req_list(FullDemon, `v2/demons/`);
+		return this.client._get_req_list(Demon, `v2/demons/`);
 	}
 
 	/**
 	 * returns a list of all demons, sorted by position
 	 */
 	async by_position() {
-		return this.client._get_req_list(FullDemon, `v1/demons/`);
+		return this.client._get_req_list(Demon, `v1/demons/`);
 	}
 
 	/**
