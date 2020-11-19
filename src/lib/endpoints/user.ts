@@ -103,6 +103,26 @@ export class User extends BaseRequest implements IUser {
 
 		return permissions_list;
 	}
+
+	/**
+	 * deletes user
+	 * be careful about using this object afterwards
+	 */
+	async delete() {
+		if (!this.etag) {
+			throw "etag is not defined for user";
+		}
+
+		this.client.users._delete(this.id, this.etag);
+	}
+
+
+	/**
+	 * returns a user, but with etag if needed
+	 */
+	async get_full() {
+		return this.client.users.from_id(this.id);
+	}
 }
 
 export default class UserBuilder extends Builder {
@@ -133,6 +153,21 @@ export default class UserBuilder extends Builder {
 			return this.client._get_req(User, `v1/users/${id}`);
 		} else {
 			throw "User retrieval endpoint requires Moderator or ListHelper";
+		}
+	}
+
+	/**
+ * internal delete for user
+ * opt to use the ones built into user class
+ * @param id user id
+ * @param etag etag to identify id by
+ */
+	async _delete(id: number, etag: string) {
+		if (this.client.user &&
+			this.client.user.implied_permissions.includes(PermissionTypes.Administrator)) {
+			this.client._delete_req(`v1/users/${id}`, { etag: etag });
+		} else {
+			throw "User deletion endpoint requires Administrator!";
 		}
 	}
 }
