@@ -54,7 +54,7 @@ export default class PointercrateClient {
 				}
 			});
 
-			this.user = new User(response.data.data, { etag: response.headers["ETag"], client: this });
+			this.user = new User(response.data.data, { etag: response.headers["etag"], client: this });
 			this.token = response.data.token;
 		} catch (error) {
 			if (error.response.data) {
@@ -73,7 +73,7 @@ export default class PointercrateClient {
 				}
 			});
 
-			this.user = new User(response.data.data, { etag: response.headers["ETag"], client: this });
+			this.user = new User(response.data.data, { etag: response.headers["etag"], client: this });
 			this.token = token;
 		} catch (error) {
 			if (error.response.data) {
@@ -149,7 +149,7 @@ export default class PointercrateClient {
 		const response = await this._get_req_with_headers<PointercrateRequest<U>>(url, options);
 
 		// some endpoints return within data field (singular or not)
-		return new data_class(response.data.data, { etag: response.headers["ETag"], client: this });
+		return new data_class(response.data.data, { etag: response.headers["etag"], client: this });
 	}
 
 	/**
@@ -188,7 +188,7 @@ export default class PointercrateClient {
 				{ headers }
 			);
 
-			return new data_class(response.data.data, { etag: response.headers["ETag"], client: this });
+			return new data_class(response.data.data, { etag: response.headers["etag"], client: this });
 		} catch (error) {
 			if (error.response.data) {
 				const pointercrate_error = <Error>error.response.data;
@@ -196,5 +196,21 @@ export default class PointercrateClient {
 			}
 			throw error;
 		}
+	}
+
+	/**
+	 * sends a delete request to a url
+	 * @param url url to delete
+	 * @param options options for request
+	 */
+	async _delete_req(url: string, options?: RequestOptions) {
+		const headers = this._req_headers(options);
+
+		await this.http_instance.delete(
+				url,
+				{ headers }
+		);
+
+		return;
 	}
 }

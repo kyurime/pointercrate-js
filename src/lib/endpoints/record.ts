@@ -1,10 +1,10 @@
 import Builder from '../base/builder';
 import BaseRequest, { IBaseData, IBaseRequest } from '../base/request';
 
-import { MinimalDemon } from './demon';
+import { IMinimalDemon, MinimalDemon } from './demon';
 import Note from './note';
-import { DatabasePlayer } from './player';
-import { Submitter } from './submitter';
+import { DatabasePlayer, IDatabasePlayer } from './player';
+import { ISubmitter, Submitter } from './submitter';
 import { PermissionTypes } from './user';
 
 export enum RecordStatus {
@@ -18,15 +18,15 @@ export interface IFullRecord extends IBaseData {
 	progress: number;
 	video?: string;
 	status: RecordStatus;
-	demon: MinimalDemon;
-	player: DatabasePlayer;
-	submitter?: Submitter;
-	notes: Note[];
+	demon: IMinimalDemon;
+	player: IDatabasePlayer;
+	submitter?: ISubmitter;
+	notes?: Note[];
 }
 
 /**
  * Full form of record
- * See https://pointercrate.com/documentation/objects/#record
+ * @see https://pointercrate.com/documentation/objects/#record
  */
 export class FullRecord extends BaseRequest implements IFullRecord {
 	progress: number;
@@ -45,17 +45,34 @@ export class FullRecord extends BaseRequest implements IFullRecord {
 	 * access to submitter requires ListHelper permissions
 	 */
 	submitter?: Submitter;
-	notes: Note[];
+	notes?: Note[];
 
-	constructor({ id, progress, video, status, demon, player, notes }: IFullRecord,
+	constructor({ id, progress, video, status, demon, player, notes, submitter }: IFullRecord,
 		data: IBaseRequest) {
 		super({ id }, data);
 		this.progress = progress;
 		this.video = video;
 		this.status = status;
-		this.demon = demon;
-		this.player = player;
+		this.demon = new MinimalDemon(demon, { client: this.client });
+		this.player = new DatabasePlayer(player, { client: this.client });
+
+		if (submitter) {
+			this.submitter = new Submitter(submitter, { client: this.client });
+		}
+
 		this.notes = notes;
+	}
+
+	/**
+	 * deletes record
+	 * be careful about using this object afterwards
+	 */
+	async delete() {
+		if (!this.etag) {
+			throw "etag is not defined for record";
+		}
+
+		this.client.records._delete(this.id, this.etag);
 	}
 }
 
@@ -63,8 +80,8 @@ export interface IMinimalRecordPD extends IBaseData {
 	progress: number;
 	video?: string;
 	status: RecordStatus;
-	demon: MinimalDemon;
-	player: DatabasePlayer;
+	demon: IMinimalDemon;
+	player: IDatabasePlayer;
 }
 
 /**
@@ -84,8 +101,15 @@ export class MinimalRecordPD extends BaseRequest implements IMinimalRecordPD {
 		this.progress = progress;
 		this.video = video;
 		this.status = status;
-		this.demon = demon;
-		this.player = player;
+		this.demon = new MinimalDemon(demon, { client: this.client });
+		this.player = new DatabasePlayer(player, { client: this.client });
+	}
+
+	/**
+	 * gets fully qualified form of record, including etag
+	 */
+	async full_record() {
+		return this.client.records._get_full(this.id);
 	}
 }
 
@@ -93,7 +117,7 @@ export interface IMinimalRecordD extends IBaseData {
 	progress: number;
 	video?: string;
 	status: RecordStatus;
-	demon: MinimalDemon;
+	demon: IMinimalDemon;
 }
 
 /**
@@ -112,7 +136,14 @@ export class MinimalRecordD extends BaseRequest implements IMinimalRecordD {
 		this.progress = progress;
 		this.video = video;
 		this.status = status;
-		this.demon = demon;
+		this.demon = new MinimalDemon(demon, { client: this.client });
+	}
+
+	/**
+	 * gets fully qualified form of record, including etag
+	 */
+	async full_record() {
+		return this.client.records._get_full(this.id);
 	}
 }
 
@@ -120,7 +151,7 @@ export interface IMinimalRecordP extends IBaseData {
 	progress: number;
 	video?: string;
 	status: RecordStatus;
-	player: DatabasePlayer;
+	player: IDatabasePlayer;
 }
 /**
  * Minimal record used in leaderboard player responses
@@ -137,7 +168,14 @@ export class MinimalRecordP extends BaseRequest implements IMinimalRecordP {
 		this.progress = progress;
 		this.video = video;
 		this.status = status;
-		this.player = player;
+		this.player = new DatabasePlayer(player, { client: this.client });
+	}
+
+	/**
+	 * gets fully qualified form of record, including etag
+	 */
+	async full_record() {
+		return this.client.records._get_full(this.id);
 	}
 }
 
@@ -159,11 +197,13 @@ export default class RecordBuilder extends Builder {
 	 * see https://pointercrate.com/documentation/records/#get-records
 	 */
 	async list() {
-		return this.client._get_req(MinimalRecordPD, `v1/records/`);
+		return this.client._get_req_list(MinimalRecordPD, `v1/records/`);
 	}
 
-	async submit(parameters: { progress: number, player: string, demon: string,
-		video?: string, status?: RecordStatus }) {
+	async submit(parameters: {
+		progress: number, player: string, demon: string,
+		video?: string, status?: RecordStatus
+	}) {
 		if ((parameters.status) && (parameters.status != RecordStatus.Submitted) &&
 			!(this.client.user &&
 				this.client.user.implied_permissions.includes(PermissionTypes.ListHelper))) {
@@ -171,5 +211,28 @@ export default class RecordBuilder extends Builder {
 		}
 
 		return this.client._post_req(MinimalRecordPD, "/v1/records/", parameters);
+	}
+
+	/**
+	 * internal delete for record
+	 * opt to use the ones built into the record if needed
+	 * @param id record id
+	 * @param etag etag to identify record by
+	 */
+	async _delete(id: number, etag: string) {
+		if (this.client.user &&
+			this.client.user.implied_permissions.includes(PermissionTypes.ListAdministrator)) {
+			this.client._delete_req(`v1/records/${id}`, { etag: etag });
+		} else {
+			throw "Record deletion endpoint requires ListAdministrator!";
+		}
+	}
+
+	/**
+	 * returns the full form of a record
+	 * @param id record id
+	 */
+	async _get_full(id: number) {
+		return this.from_id(id);
 	}
 }

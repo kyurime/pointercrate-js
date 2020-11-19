@@ -62,3 +62,14 @@ test("getting ranked players", async t => {
 
 	t.is(players[1].rank, 2);
 });
+
+test("record deletion", async t => {
+	const records = await client.records.list();
+
+	// this doesn't actually have an etag though, so we need to promote
+	const full_test_record = await records[0].full_record();
+
+	await full_test_record.delete();
+
+	t.pass();
+});
