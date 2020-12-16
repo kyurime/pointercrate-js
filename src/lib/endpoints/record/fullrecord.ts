@@ -2,7 +2,7 @@ import BaseRequest, { IBaseData, IBaseRequest } from '../../base/request';
 import MinimalDemon, { IMinimalDemon } from '../demon/minimaldemon';
 import Note from '../note';
 import DatabasePlayer, { IDatabasePlayer } from '../player/databaseplayer';
-import { ISubmitter, Submitter } from '../submitter';
+import Submitter, { ISubmitter } from '../submitter/submitter';
 
 import RecordStatus from './recordstatus';
 

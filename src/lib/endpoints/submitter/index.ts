@@ -1,19 +1,7 @@
-import Builder from '../base/builder';
-import BaseRequest, { IBaseData, IBaseRequest } from '../base/request';
+import Builder from '../../base/builder';
+import { PermissionTypes } from '../user';
 
-import { PermissionTypes } from './user';
-
-export interface ISubmitter extends IBaseData {
-	banned: boolean;
-}
-export class Submitter extends BaseRequest implements ISubmitter {
-	banned: boolean;
-
-	constructor({ id, banned }: ISubmitter, data: IBaseRequest) {
-		super({ id }, data);
-		this.banned = banned;
-	}
-}
+import Submitter from './submitter';
 
 export default class SubmitterBuilder extends Builder {
 	/**
