@@ -1,5 +1,5 @@
 import Builder from '../../base/builder';
-import { PermissionTypes } from '../user';
+import Permissions from '../user/permissions';
 
 import Player from './player';
 import RankedPlayer from './rankedplayer';
@@ -18,7 +18,7 @@ export default class PlayerBuilder extends Builder {
 	*/
 	async list() {
 		if (this.client.user &&
-			this.client.user.implied_permissions.includes(PermissionTypes.ExtendedAccess)) {
+			this.client.user.implied_permissions.includes(Permissions.ExtendedAccess)) {
 			return this.client._get_req_list(Player, `v1/players/`);
 		} else {
 			throw "Player listing endpoint requires ExtendedAccess!";

@@ -1,5 +1,5 @@
 import Builder from '../../base/builder';
-import { PermissionTypes } from '../user';
+import Permissions from '../user/permissions';
 
 import Submitter from './submitter';
 
@@ -11,7 +11,7 @@ export default class SubmitterBuilder extends Builder {
 	 */
 	async from_id(id: number) {
 		if (this.client.user &&
-			this.client.user.implied_permissions.includes(PermissionTypes.ListModerator)) {
+			this.client.user.implied_permissions.includes(Permissions.ListModerator)) {
 			return this.client._get_req(Submitter, `v1/submitters/${id}`);
 		} else {
 			throw "Submitter getting endpoint requires ListModerator!";
@@ -24,7 +24,7 @@ export default class SubmitterBuilder extends Builder {
 	 */
 	async list() {
 		if (this.client.user &&
-			this.client.user.implied_permissions.includes(PermissionTypes.ListAdministrator)) {
+			this.client.user.implied_permissions.includes(Permissions.ListAdministrator)) {
 			return this.client._get_req(Submitter, `v1/submitters/`);
 		} else {
 			throw "Player listing endpoint requires ExtendedAccess!";

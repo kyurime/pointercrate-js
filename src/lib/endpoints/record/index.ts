@@ -1,5 +1,5 @@
 import Builder from '../../base/builder';
-import { PermissionTypes } from '../user';
+import Permissions  from '../user/permissions';
 
 import FullRecord from './fullrecord';
 import MinimalRecordPD from './minimalrecordpd'
@@ -32,7 +32,7 @@ export default class RecordBuilder extends Builder {
 	}) {
 		if ((parameters.status) && (parameters.status != RecordStatus.Submitted) &&
 			!(this.client.user &&
-				this.client.user.implied_permissions.includes(PermissionTypes.ListHelper))) {
+				this.client.user.implied_permissions.includes(Permissions.ListHelper))) {
 			throw "Record adding endpoint requires ListHelper if RecordStatus is not Submitted!";
 		}
 
@@ -47,7 +47,7 @@ export default class RecordBuilder extends Builder {
 	 */
 	async _delete(id: number, etag: string) {
 		if (this.client.user &&
-			this.client.user.implied_permissions.includes(PermissionTypes.ListAdministrator)) {
+			this.client.user.implied_permissions.includes(Permissions.ListAdministrator)) {
 			this.client._delete_req(`v1/records/${id}`, { etag: etag });
 		} else {
 			throw "Record deletion endpoint requires ListAdministrator!";

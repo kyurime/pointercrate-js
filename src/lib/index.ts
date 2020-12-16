@@ -6,7 +6,8 @@ import Error from './endpoints/error';
 import PlayerBuilder from './endpoints/player';
 import RecordBuilder from './endpoints/record';
 import SubmitterBuilder from './endpoints/submitter';
-import UserBuilder, { IUser, User } from './endpoints/user';
+import UserBuilder from './endpoints/user';
+import User, { IUser } from './endpoints/user/user';
 
 interface ClientSettings {
 	url?: string;
