@@ -1,6 +1,6 @@
 import { IBaseRequest } from '../../base/request';
 import DatabasePlayer, { IDatabasePlayer } from '../player/databaseplayer';
-import { IMinimalRecordP, MinimalRecordP } from '../record';
+import MinimalRecordP, { IMinimalRecordP } from '../record/minimalrecordp';
 
 import Demon, { IDemon } from './demon';
 
