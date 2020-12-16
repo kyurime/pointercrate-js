@@ -1,7 +1,7 @@
 import Builder from '../base/builder';
 import BaseRequest, { IBaseData, IBaseRequest } from '../base/request';
 
-import { MinimalDemon } from './demon';
+import MinimalDemon from './demon/minimaldemon';
 import Nationality from './nationality';
 import { PermissionTypes } from './user';
 

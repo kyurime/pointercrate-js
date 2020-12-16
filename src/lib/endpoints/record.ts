@@ -1,7 +1,7 @@
 import Builder from '../base/builder';
 import BaseRequest, { IBaseData, IBaseRequest } from '../base/request';
 
-import { IMinimalDemon, MinimalDemon } from './demon';
+import MinimalDemon, { IMinimalDemon } from './demon/minimaldemon';
 import Note from './note';
 import { DatabasePlayer, IDatabasePlayer } from './player';
 import { ISubmitter, Submitter } from './submitter';
