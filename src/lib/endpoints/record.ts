@@ -3,7 +3,7 @@ import BaseRequest, { IBaseData, IBaseRequest } from '../base/request';
 
 import MinimalDemon, { IMinimalDemon } from './demon/minimaldemon';
 import Note from './note';
-import { DatabasePlayer, IDatabasePlayer } from './player';
+import DatabasePlayer, { IDatabasePlayer } from './player/databaseplayer';
 import { ISubmitter, Submitter } from './submitter';
 import { PermissionTypes } from './user';
 

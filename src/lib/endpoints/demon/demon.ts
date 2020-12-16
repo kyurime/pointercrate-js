@@ -1,5 +1,5 @@
 import { IBaseRequest } from '../../base/request';
-import { DatabasePlayer, IDatabasePlayer } from '../player';
+import DatabasePlayer, { IDatabasePlayer } from '../player/databaseplayer';
 
 import MinimalDemon, { IMinimalDemon } from './minimaldemon';
 
