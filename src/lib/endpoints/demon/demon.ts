@@ -8,15 +8,18 @@ export interface IDemon extends IMinimalDemon {
 	video?: string;
 	publisher: IDatabasePlayer;
 	verifier: IDatabasePlayer;
+	level_id?: number;
 }
 export default class Demon extends MinimalDemon implements IDemon {
 	requirement: number;
 	video?: string;
 	publisher: DatabasePlayer;
 	verifier: DatabasePlayer;
+	level_id?: number;
 
 	constructor(
-		{ id, position, name, requirement, video, publisher, verifier }: IDemon, data: IBaseRequest
+		{ id, position, name, requirement, video, publisher, verifier, level_id }: IDemon,
+		data: IBaseRequest
 	) {
 		super({ id, position, name }, data);
 		this.requirement = requirement;
@@ -26,6 +29,10 @@ export default class Demon extends MinimalDemon implements IDemon {
 
 		if (video) {
 			this.video = video;
+		}
+
+		if (this.level_id) {
+			this.level_id = level_id;
 		}
 	}
 }
