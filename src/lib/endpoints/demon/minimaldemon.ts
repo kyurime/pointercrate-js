@@ -1,11 +1,11 @@
 import BaseRequest, { IBaseData, IBaseRequest } from '../../base/request';
 
 export interface IMinimalDemon extends IBaseData {
-	position: number;
+	position?: number;
 	name: string;
 }
 export default class MinimalDemon extends BaseRequest implements IMinimalDemon {
-	position: number;
+	position?: number;
 	name: string;
 
 	constructor({ id, position, name }: IMinimalDemon, data: IBaseRequest) {
