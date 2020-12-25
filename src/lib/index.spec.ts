@@ -73,3 +73,9 @@ test("record deletion", async t => {
 
 	t.pass();
 });
+
+test("getting metadata", async t => {
+	const metadata = await client.get_metadata();
+
+	t.assert(metadata.extended_list_size >= metadata.list_size);
+});

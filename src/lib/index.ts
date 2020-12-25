@@ -21,6 +21,11 @@ interface RequestOptions {
 	// pagination eventually
 }
 
+export interface ListMetadata {
+	extended_list_size: number;
+	list_size: number;
+}
+
 export default class PointercrateClient {
 	http_instance: AxiosInstance;
 
@@ -41,6 +46,11 @@ export default class PointercrateClient {
 		this.http_instance = axios.create({
 			baseURL: this.url
 		});
+	}
+
+	async get_metadata() {
+		const response = await this.http_instance.get<ListMetadata>("/v1/list_information/");
+		return response.data;
 	}
 
 	/**
