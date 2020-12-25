@@ -33,11 +33,13 @@ export default class PointercrateClient {
 	user?: User;
 	token?: string;
 
+	url: string;
+
 	constructor(settings?: ClientSettings) {
-		const url = settings?.url ?? "https://pointercrate.com/api/";
+		this.url = settings?.url ?? "https://pointercrate.com/api/";
 
 		this.http_instance = axios.create({
-			baseURL: url
+			baseURL: this.url
 		});
 	}
 
@@ -68,7 +70,7 @@ export default class PointercrateClient {
 
 	async token_login(token: string) {
 		try {
-			const response = await this.http_instance.post<PointercrateRequest<IUser>>("/v1/auth/", {}, {
+			const response = await this.http_instance.get<PointercrateRequest<IUser>>("/v1/auth/me/", {
 				headers: {
 					"Authorization": `Bearer ${token}`
 				}
