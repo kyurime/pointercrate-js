@@ -14,10 +14,10 @@ export default class FullDemon extends Demon implements IFullDemon {
 	records: MinimalRecordP[];
 
 	constructor(
-		{ id, position, name, requirement, video, publisher, verifier, creators, records }: IFullDemon,
+		{ id, position, name, requirement, video, publisher, verifier, level_id, creators, records }: IFullDemon,
 		data: IBaseRequest
 	) {
-		super({ id, position, name, requirement, video, publisher, verifier }, data);
+		super({ id, position, name, requirement, video, publisher, level_id, verifier }, data);
 
 		this.creators = [];
 		for (const creator of creators) {
