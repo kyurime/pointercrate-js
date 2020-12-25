@@ -31,7 +31,7 @@ export default class Demon extends MinimalDemon implements IDemon {
 			this.video = video;
 		}
 
-		if (this.level_id) {
+		if (level_id) {
 			this.level_id = level_id;
 		}
 	}
