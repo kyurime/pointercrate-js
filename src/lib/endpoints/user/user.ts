@@ -1,6 +1,6 @@
 import BaseRequest, { IBaseData, IBaseRequest } from '../../base/request';
 
-import Permissions from './permissions';
+import { implied_permissions, permissions_list } from './permissions_helpers';
 
 export interface IUser extends IBaseData {
 	name: string;
@@ -31,67 +31,14 @@ export default class User extends BaseRequest implements IUser {
 	}
 
 	get permissions_list() {
-		const permissions_list: Permissions[] = [];
-
-		for (const permission in Permissions) {
-			// returns both the values we want and the names of each key
-			if (isNaN(Number(permission))) {
-				continue;
-			}
-
-			if ((this.permissions & Number(permission)) == Number(permission)) {
-				permissions_list.push(Number(permission));
-			}
-		}
-
-		return permissions_list;
-	}
-
-	get_permissions_list() {
-		const permissions_list: Permissions[] = [];
-
-		for (const permission in Permissions) {
-			// returns both the values we want and the names of each key
-			if (isNaN(Number(permission))) {
-				continue;
-			}
-
-			if ((this.permissions & Number(permission)) == Number(permission)) {
-				permissions_list.push(Number(permission));
-			}
-		}
-
-		return permissions_list;
+		return permissions_list(this.permissions);
 	}
 
 	/**
 	 * gets permissions with inheritance
 	 */
 	get implied_permissions() {
-		const permissions_list = this.permissions_list;
-
-		// this is how pointercrate does it (shrug)
-		if (permissions_list.includes(Permissions.Administrator)) {
-			permissions_list.push(Permissions.Administrator);
-		}
-
-		if (permissions_list.includes(Permissions.ListAdministrator)) {
-			permissions_list.push(Permissions.ListModerator);
-		}
-
-		if (permissions_list.includes(Permissions.ListModerator)) {
-			permissions_list.push(Permissions.ListHelper);
-		}
-
-		if (permissions_list.includes(Permissions.ListHelper)) {
-			permissions_list.push(Permissions.ExtendedAccess);
-		}
-
-		if (permissions_list.includes(Permissions.LeaderboardAdministrator)) {
-			permissions_list.push(Permissions.LeaderboardModerator);
-		}
-
-		return permissions_list;
+		return implied_permissions(this.permissions);
 	}
 
 	/**
