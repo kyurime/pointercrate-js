@@ -70,7 +70,7 @@ export default class PointercrateClient {
 			this.user = new User(response.data.data, { etag: response.headers["etag"], client: this });
 			this.token = response.data.token;
 		} catch (error) {
-			if ("response" in error && "data" in error.response) {
+			if (error.response?.data) {
 				const pointercrate_error = <Error>error.response.data;
 				throw pointercrate_error;
 			}
@@ -89,7 +89,7 @@ export default class PointercrateClient {
 			this.user = new User(response.data.data, { etag: response.headers["etag"], client: this });
 			this.token = token;
 		} catch (error) {
-			if ("response" in error && "data" in error.response) {
+			if (error.response?.data) {
 				const pointercrate_error = <Error>error.response.data;
 				throw pointercrate_error;
 			}
@@ -144,7 +144,7 @@ export default class PointercrateClient {
 			});
 			return response;
 		} catch (error) {
-			if ("response" in error && "data" in error.response) {
+			if (error.response?.data) {
 				const pointercrate_error = <Error>error.response.data;
 				throw pointercrate_error;
 			}
@@ -203,7 +203,7 @@ export default class PointercrateClient {
 
 			return new data_class(response.data.data, { etag: response.headers["etag"], client: this });
 		} catch (error) {
-			if ("response" in error && "data" in error.response) {
+			if (error.response?.data) {
 				const pointercrate_error = <Error>error.response.data;
 				throw pointercrate_error;
 			}
