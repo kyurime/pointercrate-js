@@ -20,5 +20,5 @@ export default interface RecordListingPagination extends PointercratePagination 
 
 	video?: string;
 
-	submitter: number;
+	submitter?: number;
 }
