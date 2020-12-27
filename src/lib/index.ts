@@ -1,9 +1,9 @@
 import axios, { AxiosInstance } from 'axios';
 
+import PointercrateError from './base/error';
 import PointercratePagination from './base/pagination';
 import BaseRequest, { IBaseData, IBaseRequest, PointercrateRequest } from './base/request';
 import DemonBuilder from './endpoints/demon';
-import Error from './endpoints/error';
 import PlayerBuilder from './endpoints/player';
 import RecordBuilder from './endpoints/record';
 import SubmitterBuilder from './endpoints/submitter';
@@ -72,8 +72,7 @@ export default class PointercrateClient {
 			this.token = response.data.token;
 		} catch (error) {
 			if (error.response?.data) {
-				const pointercrate_error = <Error>error.response.data;
-				throw pointercrate_error;
+				throw new PointercrateError(error.response.data);
 			}
 			throw error;
 		}
@@ -91,8 +90,7 @@ export default class PointercrateClient {
 			this.token = token;
 		} catch (error) {
 			if (error.response?.data) {
-				const pointercrate_error = <Error>error.response.data;
-				throw pointercrate_error;
+				throw new PointercrateError(error.response.data);
 			}
 			throw error;
 		}
@@ -153,8 +151,7 @@ export default class PointercrateClient {
 			return response;
 		} catch (error) {
 			if (error.response?.data) {
-				const pointercrate_error = <Error>error.response.data;
-				throw pointercrate_error;
+				throw new PointercrateError(error.response.data);
 			}
 			throw error;
 		}
@@ -214,8 +211,7 @@ export default class PointercrateClient {
 			return new data_class(response.data.data, { etag: response.headers["etag"], client: this });
 		} catch (error) {
 			if (error.response?.data) {
-				const pointercrate_error = <Error>error.response.data;
-				throw pointercrate_error;
+				throw new PointercrateError(error.response.data);
 			}
 			throw error;
 		}

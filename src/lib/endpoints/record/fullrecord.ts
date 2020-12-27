@@ -64,6 +64,6 @@ export default class FullRecord extends BaseRequest implements IFullRecord {
 			throw "etag is not defined for record";
 		}
 
-		this.client.records._delete(this.id, this.etag);
+		return this.client.records._delete(this.id, this.etag);
 	}
 }

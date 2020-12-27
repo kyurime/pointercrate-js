@@ -65,7 +65,7 @@ export default class RecordBuilder extends Builder {
 	async _delete(id: number, etag: string) {
 		if (this.client.user &&
 			this.client.user.implied_permissions.includes(Permissions.ListAdministrator)) {
-			this.client._delete_req(`v1/records/${id}`, { etag: etag });
+			return this.client._delete_req(`v1/records/${id}/`, { etag: etag });
 		} else {
 			throw "Record deletion endpoint requires ListAdministrator!";
 		}

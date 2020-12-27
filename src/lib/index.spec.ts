@@ -1,5 +1,7 @@
 import test from 'ava';
 
+import PointercrateError from './base/error';
+
 import PointercrateClient from '.';
 
 // global client (why not?)
@@ -76,10 +78,14 @@ test("record deletion", async t => {
 
 	// this doesn't actually have an etag though, so we need to promote
 	const full_test_record = await records[0].full_record();
-
 	await full_test_record.delete();
 
-	t.pass();
+	await t.throwsAsync(async () => {
+		await client.records.from_id(full_test_record.id);
+	}, {
+		instanceOf: PointercrateError,
+		code: 40401,
+	});
 });
 
 test("getting metadata", async t => {
