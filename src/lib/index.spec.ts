@@ -36,6 +36,14 @@ test("getting demons by id", async t => {
 	t.is(demons[1].id, 2);
 });
 
+test("demon pagination limit", async t => {
+	const demons = await client.demons.by_id({
+		limit: 1
+	});
+
+	t.assert(demons.length == 1);
+});
+
 test("creating demon by position, name validation check", async t => {
 	const name = Math.random().toString(36).slice(2);
 

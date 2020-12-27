@@ -3,6 +3,7 @@ import Permissions  from '../user/permissions';
 
 import FullRecord from './fullrecord';
 import MinimalRecordPD from './minimalrecordpd'
+import RecordListingPagination from './recordpagination';
 import RecordStatus from './recordstatus';
 
 export default class RecordBuilder extends Builder {
@@ -20,12 +21,28 @@ export default class RecordBuilder extends Builder {
 	/**
 	 * gets listing of all records
 	 * extended access is needed for non approved records
-	 * see https://pointercrate.com/documentation/records/#get-records
+	 * @see https://pointercrate.com/documentation/records/#get-records
+	 * @param filters pagination filters for record listing
 	 */
-	async list() {
-		return this.client._get_req_list(MinimalRecordPD, `v1/records/`);
+	async list(filters?: RecordListingPagination) {
+		if (filters) {
+			if (filters.status &&
+				!this.client.user?.implied_permissions.includes(Permissions.ExtendedAccess)) {
+					throw "Filtering by status requires ExtendedAccess!"
+				}
+			if (filters.submitter &&
+				!this.client.user?.implied_permissions.includes(Permissions.ListModerator)) {
+					throw "Filtering by submitter requires ListModerator!"
+				}
+		}
+
+		return this.client._get_req_list(MinimalRecordPD, `v1/records/`, filters);
 	}
 
+	/**
+	 * submits a record to the pointercrate servers
+	 * @param parameters parameters to submit record with
+	 */
 	async submit(parameters: {
 		progress: number, player: string, demon: string,
 		video?: string, status?: RecordStatus

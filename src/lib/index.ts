@@ -1,5 +1,6 @@
 import axios, { AxiosInstance } from 'axios';
 
+import PointercratePagination from './base/pagination';
 import BaseRequest, { IBaseData, IBaseRequest, PointercrateRequest } from './base/request';
 import DemonBuilder from './endpoints/demon';
 import Error from './endpoints/error';
@@ -135,11 +136,18 @@ export default class PointercrateClient {
 	 * runs a get request without any type abstraction
 	 * @param url url from pointercrate to get
 	 */
-	async _get_req_with_headers<T>(url: string, options?: RequestOptions) {
+	async _get_req_with_headers<T>(
+		url: string,
+		{ options, pagination }:
+		{ options?: RequestOptions, pagination?: PointercratePagination }
+	) {
 		const headers = this._req_headers(options);
+
+		const params = pagination;
 
 		try {
 			const response = await this.http_instance.get<T>(url, {
+				params,
 				headers
 			});
 			return response;
@@ -159,7 +167,7 @@ export default class PointercrateClient {
 	 */
 	async _get_req<T extends BaseRequest, U extends IBaseData>
 		(data_class: new (data: U, settings: IBaseRequest) => T, url: string, options?: RequestOptions) {
-		const response = await this._get_req_with_headers<PointercrateRequest<U>>(url, options);
+		const response = await this._get_req_with_headers<PointercrateRequest<U>>(url, { options });
 
 		// some endpoints return within data field (singular or not)
 		return new data_class(response.data.data, { etag: response.headers["etag"], client: this });
@@ -170,9 +178,11 @@ export default class PointercrateClient {
 	 * @param data_class class to convert into
 	 * @param url url of pointercrate to access
 	 */
-	async _get_req_list<T extends BaseRequest, U extends IBaseData>
-		(data_class: new (data: U, settings: IBaseRequest) => T, url: string, options?: RequestOptions): Promise<T[]> {
-		const response = await this._get_req_with_headers<U[]>(url, options);
+	async _get_req_list<T extends BaseRequest, U extends IBaseData>(
+		data_class: new (data: U, settings: IBaseRequest) => T,
+		url: string,
+		pagination?: PointercratePagination): Promise<T[]> {
+		const response = await this._get_req_with_headers<U[]>(url, { pagination });
 
 		const class_list = [];
 

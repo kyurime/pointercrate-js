@@ -7,9 +7,6 @@ API for pointercrate.com
 The following implementations are yet to be added
 
 * Any modification endpoints
-* Any deletion endpoints
-* Any pagination
-* Any filtering
 
 ## Tests
 

@@ -2,18 +2,19 @@ import Builder from "../../base/builder";
 
 import Permissions from './permissions';
 import User from './user';
+import UserListingFilters from "./userpagination";
 
 export default class UserBuilder extends Builder {
 	/**
 	 * gets registered user listing
 	 * requires at least moderator or listhelper
 	 */
-	async list() {
+	async list(filters?: UserListingFilters) {
 		// ugh dual permissions
 		if (this.client.user &&
 			(this.client.user.implied_permissions.includes(Permissions.Moderator) ||
 				this.client.user.implied_permissions.includes(Permissions.ListHelper))) {
-			return this.client._get_req_list(User, "v1/users/");
+			return this.client._get_req_list(User, "v1/users/", filters);
 		} else {
 			throw "User listing endpoint requires Moderator or ListHelper";
 		}

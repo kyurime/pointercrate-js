@@ -2,6 +2,7 @@ import Builder from '../../base/builder';
 import Permissions from '../user/permissions';
 
 import Demon from './demon';
+import DemonListingFilters from './demonpagination';
 import FullDemon from './fulldemon';
 
 export default class DemonBuilder extends Builder {
@@ -23,16 +24,18 @@ export default class DemonBuilder extends Builder {
 
 	/**
 	 * returns a list of all demons, sorted by id
+	 * @param filters pagination filters for demon listing
 	 */
-	async by_id() {
-		return this.client._get_req_list(Demon, `v2/demons/`);
+	async by_id(filters?: DemonListingFilters) {
+		return this.client._get_req_list(Demon, `v2/demons/`, filters);
 	}
 
 	/**
 	 * returns a list of all demons, sorted by position
+	 * @param filters pagination filters for demon listing
 	 */
-	async by_position() {
-		return this.client._get_req_list(Demon, `v1/demons/`);
+	async by_position(filters?: DemonListingFilters) {
+		return this.client._get_req_list(Demon, `v1/demons/`, filters);
 	}
 
 	/**
