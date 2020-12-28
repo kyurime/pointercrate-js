@@ -1,5 +1,4 @@
 import Builder from '../../base/builder';
-import Permissions  from '../user/permissions';
 
 import FullRecord from './fullrecord';
 import MinimalRecordPD from './minimalrecordpd'
@@ -25,17 +24,6 @@ export default class RecordBuilder extends Builder {
 	 * @param filters pagination filters for record listing
 	 */
 	async list(filters?: RecordListingPagination) {
-		if (filters) {
-			if (filters.status &&
-				!this.client.user?.implied_permissions.includes(Permissions.ExtendedAccess)) {
-					throw "Filtering by status requires ExtendedAccess!"
-				}
-			if (filters.submitter &&
-				!this.client.user?.implied_permissions.includes(Permissions.ListModerator)) {
-					throw "Filtering by submitter requires ListModerator!"
-				}
-		}
-
 		return this.client._get_req_list(MinimalRecordPD, `v1/records/`, filters);
 	}
 
@@ -47,12 +35,6 @@ export default class RecordBuilder extends Builder {
 		progress: number, player: string, demon: string,
 		video?: string, status?: RecordStatus
 	}) {
-		if ((parameters.status) && (parameters.status != RecordStatus.Submitted) &&
-			!(this.client.user &&
-				this.client.user.implied_permissions.includes(Permissions.ListHelper))) {
-			throw "Record adding endpoint requires ListHelper if RecordStatus is not Submitted!";
-		}
-
 		return this.client._post_req(MinimalRecordPD, "/v1/records/", parameters);
 	}
 
@@ -63,12 +45,7 @@ export default class RecordBuilder extends Builder {
 	 * @param etag etag to identify record by
 	 */
 	async _delete(id: number, etag: string) {
-		if (this.client.user &&
-			this.client.user.implied_permissions.includes(Permissions.ListAdministrator)) {
-			return this.client._delete_req(`v1/records/${id}/`, { etag: etag });
-		} else {
-			throw "Record deletion endpoint requires ListAdministrator!";
-		}
+		return this.client._delete_req(`v1/records/${id}/`, { etag: etag });
 	}
 
 	/**

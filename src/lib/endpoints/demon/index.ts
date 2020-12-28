@@ -1,5 +1,4 @@
 import Builder from '../../base/builder';
-import Permissions from '../user/permissions';
 
 import Demon from './demon';
 import DemonListingFilters from './demonpagination';
@@ -48,11 +47,6 @@ export default class DemonBuilder extends Builder {
 			verifier: string, publisher: string,
 			creators: string[], video?: string
 		}) {
-		if (this.client.user &&
-			this.client.user.implied_permissions.includes(Permissions.ListModerator)) {
-			return this.client._post_req(Demon, "/v1/demons/", parameters);
-		} else {
-			throw "Demon adding endpoint requires ListModerator!";
-		}
+		return this.client._post_req(Demon, "/v1/demons/", parameters);
 	}
 }

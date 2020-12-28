@@ -1,6 +1,5 @@
 import Builder from "../../base/builder";
 
-import Permissions from './permissions';
 import User from './user';
 import UserListingFilters from "./userpagination";
 
@@ -10,14 +9,7 @@ export default class UserBuilder extends Builder {
 	 * requires at least moderator or listhelper
 	 */
 	async list(filters?: UserListingFilters) {
-		// ugh dual permissions
-		if (this.client.user &&
-			(this.client.user.implied_permissions.includes(Permissions.Moderator) ||
-				this.client.user.implied_permissions.includes(Permissions.ListHelper))) {
-			return this.client._get_req_list(User, "v1/users/", filters);
-		} else {
-			throw "User listing endpoint requires Moderator or ListHelper";
-		}
+		return this.client._get_req_list(User, "v1/users/", filters);
 	}
 
 	/**
@@ -26,13 +18,7 @@ export default class UserBuilder extends Builder {
 	 * @param id user id of user to get
 	 */
 	async from_id(id: number) {
-		if (this.client.user &&
-			(this.client.user.implied_permissions.includes(Permissions.Moderator) ||
-				this.client.user.implied_permissions.includes(Permissions.ListHelper))) {
-			return this.client._get_req(User, `v1/users/${id}`);
-		} else {
-			throw "User retrieval endpoint requires Moderator or ListHelper";
-		}
+		return this.client._get_req(User, `v1/users/${id}`);
 	}
 
 	/**
@@ -42,11 +28,6 @@ export default class UserBuilder extends Builder {
  * @param etag etag to identify id by
  */
 	async _delete(id: number, etag: string) {
-		if (this.client.user &&
-			this.client.user.implied_permissions.includes(Permissions.Administrator)) {
-			this.client._delete_req(`v1/users/${id}`, { etag: etag });
-		} else {
-			throw "User deletion endpoint requires Administrator!";
-		}
+		this.client._delete_req(`v1/users/${id}`, { etag: etag });
 	}
 }

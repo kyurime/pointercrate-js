@@ -1,5 +1,4 @@
 import Builder from '../../base/builder';
-import Permissions from '../user/permissions';
 
 import Submitter from './submitter';
 import SubmitterListingFilters from './submitterpagination';
@@ -11,12 +10,7 @@ export default class SubmitterBuilder extends Builder {
 	 * @param id id of submitter
 	 */
 	async from_id(id: number) {
-		if (this.client.user &&
-			this.client.user.implied_permissions.includes(Permissions.ListModerator)) {
-			return this.client._get_req(Submitter, `v1/submitters/${id}`);
-		} else {
-			throw "Submitter getting endpoint requires ListModerator!";
-		}
+		return this.client._get_req(Submitter, `v1/submitters/${id}`);
 	}
 
 	/**
@@ -25,11 +19,6 @@ export default class SubmitterBuilder extends Builder {
 	 * @params filters Filters and pagination for submitter listing
 	 */
 	async list(filters?: SubmitterListingFilters) {
-		if (this.client.user &&
-			this.client.user.implied_permissions.includes(Permissions.ListAdministrator)) {
-			return this.client._get_req_list(Submitter, `v1/submitters/`, filters);
-		} else {
-			throw "Player listing endpoint requires ExtendedAccess!";
-		}
+		return this.client._get_req_list(Submitter, `v1/submitters/`, filters);
 	}
 }
