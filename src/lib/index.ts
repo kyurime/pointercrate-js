@@ -109,6 +109,26 @@ export default class PointercrateClient {
 	}
 
 	/**
+	 * logs out of an account
+	 */
+	async logout() {
+		this.token = undefined;
+		this.user = undefined;
+	}
+
+	async edit_self(parameters: {
+		display_name: string,
+		youtube_channel: string,
+		permissions: number,
+	}) {
+		if (!this.user) {
+			throw new Error("no user logged in to edit!");
+		}
+
+		this.user = await this._post_req(User, "/v1/auth/me/", parameters, { etag: this.user.etag });
+	}
+
+	/**
 	 * returns a generated list of headers based off provided options
 	 * @param options options for the request
 	 */
@@ -188,6 +208,52 @@ export default class PointercrateClient {
 		}
 
 		return class_list;
+	}
+
+	/**
+	 * sends a patch request to pointercrate servers with auth and etag
+	 * @param data_class class that url will return
+	 * @param url url to post to
+	 * @param data data to send to servers
+	 * @param etag if-match
+	 */
+	async _patch_req<T extends BaseRequest, U extends IBaseData>
+		(data_class: new (data: U, settings: IBaseRequest) => T, url: string, data: Record<string, unknown>, options?: RequestOptions) {
+		const headers = this._req_headers(options);
+
+		try {
+			const response = await this.http_instance.patch<PointercrateRequest<U>>(
+				url,
+				data,
+				{ headers }
+			);
+
+			return new data_class(response.data.data, { etag: response.headers["etag"], client: this });
+		} catch (error) {
+			if (error.response?.data) {
+				throw new PointercrateError(error.response.data);
+			}
+			throw error;
+		}
+	}
+
+	async _patch_req_no_resp(url: string, data: Record<string, unknown>, options?: RequestOptions) {
+		const headers = this._req_headers(options);
+
+		try {
+			await this.http_instance.patch(
+				url,
+				data,
+				{ headers }
+			);
+
+			return;
+		} catch (error) {
+			if (error.response?.data) {
+				throw new PointercrateError(error.response.data);
+			}
+			throw error;
+		}
 	}
 
 	/**

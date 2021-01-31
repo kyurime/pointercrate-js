@@ -47,12 +47,25 @@ export default class User extends BaseRequest implements IUser {
 	 */
 	async delete() {
 		if (!this.etag) {
-			throw "etag is not defined for user";
+			throw new Error("etag is not defined for user");
 		}
 
 		this.client.users._delete(this.id, this.etag);
 	}
 
+	async edit(parameters: {
+		display_name: string,
+		permissions: number,
+	}) {
+		if (!this.etag) {
+			throw new Error("etag is not defined for user");
+		}
+
+		const new_user = await this.client.users._edit(this.id, this.etag, parameters);
+
+		this.display_name = new_user.display_name;
+		this.permissions = new_user.permissions;
+	}
 
 	/**
 	 * returns a user, but with etag if needed

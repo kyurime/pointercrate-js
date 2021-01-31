@@ -61,9 +61,26 @@ export default class FullRecord extends BaseRequest implements IFullRecord {
 	 */
 	async delete() {
 		if (!this.etag) {
-			throw "etag is not defined for record";
+			throw new Error("etag is not defined for record");
 		}
 
 		return this.client.records._delete(this.id, this.etag);
+	}
+
+	async edit(parameters: {
+		progress?: number, video?: string, status?: RecordStatus,
+		player?: string, demon?: string,
+		}) {
+		if (!this.etag) {
+			throw new Error("etag is not defined for record");
+		}
+
+		const new_record = await this.client.records._edit(this.id, this.etag, parameters);
+
+		this.progress = new_record.progress;
+		this.video = new_record.video;
+		this.status = new_record.status;
+		this.player = new_record.player;
+		this.demon = new_record.demon;
 	}
 }

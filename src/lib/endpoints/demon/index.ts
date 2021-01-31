@@ -47,6 +47,24 @@ export default class DemonBuilder extends Builder {
 			verifier: string, publisher: string,
 			creators: string[], video?: string
 		}) {
-		return this.client._post_req(Demon, "/v1/demons/", parameters);
+		return this.client._post_req(Demon, "v1/demons/", parameters);
 	}
+
+	async _edit(id: number, etag: string, parameters:
+		{
+			name?: string, position?: number, video?: string, requirement?: number,
+			verifier?: string, publisher?: string
+		}) {
+			return this.client._patch_req(FullDemon, `v2/demons/${id}/`, parameters, { etag });
+		}
+
+	async _add_creator(id: number, author_name: string) {
+		return this.client._patch_req_no_resp(`v2/demons/${id}/creators`, {
+				creator: author_name
+			});
+		}
+
+	async _delete_creator(id: number, author_id: number) {
+			return this.client._delete_req(`v2/demons/${id}/creators/${author_id}`);
+		}
 }

@@ -55,4 +55,11 @@ export default class RecordBuilder extends Builder {
 	async _get_full(id: number) {
 		return this.from_id(id);
 	}
+
+	async _edit(id: number, etag: string, parameters: {
+		progress?: number, video?: string, status?: RecordStatus,
+		player?: string, demon?: string,
+	}) {
+		return this.client._patch_req(FullRecord, `v1/records/${id}/`, parameters, { etag });
+	}
 }

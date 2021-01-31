@@ -30,4 +30,10 @@ export default class PlayerBuilder extends Builder {
 	async by_ranking(filters?: RankedPlayerListingFilters) {
 		return this.client._get_req_list(RankedPlayer, `v1/players/ranking/`, filters);
 	}
+
+	async _edit(id: number, etag: string, parameters: {
+		name?: string, banned?: boolean, nationality?: string,
+	}) {
+		return this.client._patch_req(Player, `v1/players/${id}/`, parameters, { etag });
+	}
 }

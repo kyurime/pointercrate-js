@@ -30,4 +30,11 @@ export default class UserBuilder extends Builder {
 	async _delete(id: number, etag: string) {
 		this.client._delete_req(`v1/users/${id}`, { etag: etag });
 	}
+
+	async _edit(id: number, etag: string, parameters: {
+		display_name: string,
+		permissions: number
+	}) {
+		return this.client._post_req(User, `v1/users/${id}/`, parameters, { etag });
+	}
 }

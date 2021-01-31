@@ -21,4 +21,10 @@ export default class SubmitterBuilder extends Builder {
 	async list(filters?: SubmitterListingFilters) {
 		return this.client._get_req_list(Submitter, `v1/submitters/`, filters);
 	}
+
+	async _edit(id: number, etag: string, parameters: {
+		banned?: boolean
+	}) {
+		return this.client._patch_req(Submitter, `v1/submitters/${id}/`, parameters, { etag });
+	}
 }

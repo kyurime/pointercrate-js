@@ -31,4 +31,14 @@ export default class FullPlayer extends Player implements IFullPlayer {
 		this.verified = verified.map((demon) => new MinimalDemon(demon, { client: this.client }));
 		this.published = published.map((demon) => new MinimalDemon(demon, { client: this.client }));
 	}
+
+	async edit(parameters: {
+		name?: string, banned?: boolean, nationality?: string,
+	}) {
+		if (!this.etag) {
+			throw new Error("etag not found for player");
+		}
+
+		return this.client.players._edit(this.id, this.etag, parameters);
+	}
 }
