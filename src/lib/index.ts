@@ -125,7 +125,7 @@ export default class PointercrateClient {
 			throw new Error("no user logged in to edit!");
 		}
 
-		this.user = await this._post_req(User, "/v1/auth/me/", parameters, { etag: this.user.etag });
+		this.user = await this._patch_req(User, "/v1/auth/me/", parameters, { etag: this.user.etag });
 	}
 
 	/**
