@@ -117,9 +117,9 @@ export default class PointercrateClient {
 	}
 
 	async edit_self(parameters: {
-		display_name: string,
-		youtube_channel: string,
-		permissions: number,
+		display_name?: string,
+		youtube_channel?: string,
+		permissions?: number,
 	}) {
 		if (!this.user) {
 			throw new Error("no user logged in to edit!");
