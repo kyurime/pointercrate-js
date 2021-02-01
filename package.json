@@ -1,6 +1,6 @@
 {
   "name": "pointercrate-js",
-  "version": "0.0.8-alpha",
+  "version": "0.0.8-alpha1",
   "description": "WIP API for pointercrate.com",
   "main": "build/main/index.js",
   "typings": "build/main/index.d.ts",
